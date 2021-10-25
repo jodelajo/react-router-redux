@@ -1,47 +1,65 @@
-import React from "react";
-import {useParams } from 'react-router-dom'
-import { connect } from 'react-redux'
+import React, {useEffect} from "react";
+import { connect } from "react-redux";
+import { deleteCard, fetchUsers } from "../actions/cardActions";
 
-// import './App.css';
-
-function Card({ cards }) {
-
-  // const [singleCard, setSingleCard] = useState()
-// const {user} = useParams()
-// console.log('user', user);
-console.log(cards);
+function Card(props) {
+  const { id } = props.card;
+  const { users, fetchUsers, deleteCard, history } = props
+  console.log(users);
 
 
-  return (
-    <>
-  { cards.map((card) => {
-    return(
-      <div
+  useEffect(() => {
+    fetchUsers()
+  },[])
+
+  function onButtonClick() {
+    deleteCard(id);
+    history.push("/contact");
+  }
+
+  return users.map((user) => {
+return (
+    <div
       className="ui raised very padded text container segment"
       style={{ marginTop: "80px" }}
-      key = {card.id}
+      key={user.id}
     >
-      <h3 className="ui header"> {card.title}</h3>
-      <p>
-       {card.body}
-      </p>
+      <h3 className="ui header"> {user.name}</h3>
+      <p>{user.email}</p>
+      <p>{user.address.city}</p>
+      <button
+        className="ui primary right floated button"
+        onClick={onButtonClick}
+      >
+        Delete
+      </button>
     </div>
-    )
-  })}
-
-  </>
   );
-}
-const MapStateToProps = (state, cards) => {
-  console.log('cards', cards);
-  const {user} = useParams()
- let title = user;
- console.log('title', title);
- return {
-   card: state.cards.find((card) => {
-     return card.title === title;
- })
-}
+  })
+
+  
 }
 
-export default connect(MapStateToProps)(Card);
+const mapStateToProps = (state, ownProps) => {
+  let title = ownProps.match.params.user;
+  return {
+    card: state.cards.find((card) => {
+      return card.title === title
+      
+    }),
+    users: state.users
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteCard: (id) => {
+      dispatch(deleteCard(id));
+    },
+    fetchUsers: () => {
+      dispatch(fetchUsers())
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Card);

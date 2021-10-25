@@ -20,3 +20,4 @@
 
 ![applicatie_example](/src/assets/certificaat.jpeg)
 
+[Udemy Course Learn Redux with Modern React JS](https://www.udemy.com/course/redux-with-react-learn-redux-with-modern-react/)
